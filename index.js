@@ -79,12 +79,14 @@ async function stampPdf(original, stamp, options)
 	
 		// call the callback with null error when the process exits successfully
 		child.on('exit', function(code) {
+			console.log('child exit')
 			if (code !== 0) {
 			stderrMessages.push('signPdf exited with code ' + code);
 			handleError(stderrMessages);
 			console.log('child exiting, executing callback')
-			return outputFilename;
 			}
+
+			// return outputFilename;
 		});
 	
 		// setup error handling
@@ -143,11 +145,20 @@ async function signPdf(original, options){
 		const signatureStamp = await createWatermarkPdf(options)
 
 		// stamp the pdf
-		return await stampPdf(original, signatureStamp, options)
+		const result = stampPdf(original, signatureStamp, options)
+		console.log('result is: ' + result)
+		return await returnFilename(result)
 		
 	} catch (err) {
 		logger.error(err)
 	}
+}
+
+async function returnFilename(file)
+{
+	console.log('file ', file)
+	return file
+	
 }
 
 

@@ -17,7 +17,7 @@
     "pdftk",
     "watermark"
   ],
-  "author": "Craig Pickard",
+  "author": "Craig Pickard <craigpick@gmail.com> (https://craigpickard.net)",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/Craigson/node-pdfsigner/issues"
