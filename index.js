@@ -23,12 +23,12 @@ async function createWatermarkPdf(options){
 	console.log('execute createWatermarkPdf')
 
 	let date = new Date()
-	let filenameArr = name.split(' ') // <<< add error checking here
+	let filenameArr = options.name.split(' ') // <<< add error checking here
 	let stampFile = filenameArr.join('_') + '_watermark.pdf'
 	const doc = new PDFDocument({margin:0})
 	doc.fontSize(8)
-	if (options.name) doc.text("Signed by: " + name, 50, 750)
-	if (options.ip) doc.text("IP: " + ip, 150, 750)
+	if (options.name) doc.text("Signed by: " + options.name, 50, 740)
+	if (options.ip) doc.text("IP: " + options.ip, 50, 750)
 	if (options.date && options.date == true) doc.text("Signed on: " + date, 380, 750)
 	doc.pipe( fs.createWriteStream(stampFile))
 	doc.end()
