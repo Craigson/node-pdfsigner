@@ -18,18 +18,18 @@ const PDFDocument = require('pdfkit')
 
 
 // needs to return watermark filename
-async function createWatermarkPdf(name, ip){
+async function createWatermarkPdf(options){
 
 	console.log('execute createWatermarkPdf')
 
 	let date = new Date()
-	let filenameArr = name.split('') // <<< add error checking here
+	let filenameArr = name.split(' ') // <<< add error checking here
 	let stampFile = filenameArr.join('_') + '_watermark.pdf'
 	const doc = new PDFDocument({margin:0})
 	doc.fontSize(8)
-	doc.text("Signed by: " + name, 50, 750)
-	doc.text("IP: " + ip, 150, 750)
-	doc.text("Signed on: " + date, 380, 750)
+	if (options.name) doc.text("Signed by: " + name, 50, 750)
+	if (options.ip) doc.text("IP: " + ip, 150, 750)
+	if (options.date && options.date == true) doc.text("Signed on: " + date, 380, 750)
 	doc.pipe( fs.createWriteStream(stampFile))
 	doc.end()
 
@@ -82,7 +82,6 @@ async function stampPdf(original, stamp, options)
 			if (code !== 0) {
 			stderrMessages.push('signPdf exited with code ' + code);
 			handleError(stderrMessages);
-			} else if (callback) {
 			console.log('child exiting, executing callback')
 			return outputFilename;
 			}
@@ -103,7 +102,7 @@ async function stampPdf(original, stamp, options)
 			// call the callback if there is one
 	
 			// if not, or there are listeners for errors, emit the error event
-			if (!callback || stream.listeners('error').length > 0) {
+			if (stream.listeners('error').length > 0) {
 				stream.emit('error', errObj);
 			}
 		}
@@ -141,7 +140,7 @@ async function signPdf(original, options){
 
 	try {
 		// generate the watermark with the signature
-		const signatureStamp = await createWatermarkPdf(name, ip)
+		const signatureStamp = await createWatermarkPdf(options)
 
 		// stamp the pdf
 		return await stampPdf(original, signatureStamp, options)

@@ -20,6 +20,26 @@ To install on Ubuntu Linux:
     sudo apt-get install pdftk
 
 
+## Usage
+
+```
+const pdfSigner = require('pdfSigner')
+
+var options = {
+	name: 'Craigson',
+	ip: '192.168.1.99',
+	date: true,
+	filename: 'output.pdf'
+}
+
+pdfSigner('sample.pdf', options)
+
+```
+
+## Notes
+
+Only tested on Ubuntu 16.04
+
 ## License
 
 PDFKit is available under the MIT license.
