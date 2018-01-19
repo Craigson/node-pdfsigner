@@ -1,0 +1,29 @@
+{
+  "name": "node-pdfsigner",
+  "version": "0.0.1",
+  "description": "Module for electronically signing a PDF, makes use of PDFkit and pdfkt CLI tool",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Craigson/node-pdfsigner.git"
+  },
+  "keywords": [
+    "pdf",
+    "PDFkit",
+    "signature",
+    "pdftk",
+    "watermark"
+  ],
+  "author": "Craig Pickard",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Craigson/node-pdfsigner/issues"
+  },
+  "homepage": "https://github.com/Craigson/node-pdfsigner#readme",
+  "dependencies": {
+    "pdfkit": "^0.8.3"
+  }
+}
