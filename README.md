@@ -12,7 +12,7 @@ Installation uses the [npm](http://npmjs.org/) package manager.  Just type the f
 
     npm install pdfkit
 
-You'll need to follow the instructions from PDF labs [here](https://www.pdflabs.com/tools/pdftk-server/) to install <I>dftk</I>.
+You'll need to follow the instructions from PDF labs [here](https://www.pdflabs.com/tools/pdftk-server/) to install <I>pdftk</I>.
 
 To install on Ubuntu Linux:
 
