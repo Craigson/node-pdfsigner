@@ -22,6 +22,8 @@ To install on Ubuntu Linux:
 
 ## Usage
 
+The package makes use of the ES6 async/await feature to sign a pdf in a two-step process. A pdf is created using pdfkit that contains the signature, then the watermark pdf is overplayed and combined with the input file.
+
 ```
 const pdfSigner = require('pdfSigner')
 

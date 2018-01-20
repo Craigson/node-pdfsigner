@@ -1,21 +1,10 @@
 /*
-TODO:
-- change margin as an option
+	This package references code from devongovett's node-wkhtmltopdf (https://github.com/devongovett/node-wkhtmltopdf)
 */
 
-/*
-	options = {
-		name: 'your name',
-		ip: 'your IP',
-		date: true (defaults to true),
-		filename: 'filename.pdf'
-	}
-*/
 const spawn = require('child_process').spawn;
 const fs = require('fs')
 const PDFDocument = require('pdfkit')
-
-
 
 // needs to return watermark filename
 async function createWatermarkPdf(options){
@@ -28,7 +17,7 @@ async function createWatermarkPdf(options){
 	const doc = new PDFDocument({margin:0})
 	doc.fontSize(8)
 	if (options.name) doc.text("Signed by: " + options.name, 50, 740)
-	if (options.ip) doc.text("IP: " + options.ip, 50, 750)
+	if (options.ip) doc.text("IP address: " + options.ip, 50, 750)
 	if (options.date && options.date == true) doc.text("Signed on: " + date, 380, 750)
 	doc.pipe( fs.createWriteStream(stampFile))
 	doc.end()
