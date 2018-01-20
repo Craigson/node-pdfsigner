@@ -44,8 +44,8 @@ Example:
 const pdfSigner = require('pdfSigner')
 
 var options = {
-	name: 'Craigson',
-	ip: '192.168.1.99',
+	name: 'John Doe',
+	ip: '59.164.23.12',
 	date: true,
 	filename: 'output.pdf',
 	color: "red"
@@ -54,6 +54,12 @@ var options = {
 pdfSigner('sample.pdf', options)
 
 ```
+
+![Input File](https://github.com/Craigson/node-pdfsigner/blob/master/examples/input.png?raw=true "Input File")
+
+![Generated Signature](https://github.com/Craigson/node-pdfsigner/blob/master/examples/watermark.png?raw=true "Signature")
+
+![Result](https://github.com/Craigson/node-pdfsigner/blob/master/examples/output.png?raw=true "Result")
 
 ## Notes
 
