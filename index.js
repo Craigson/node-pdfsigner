@@ -2,6 +2,19 @@
 	This package references code from devongovett's node-wkhtmltopdf (https://github.com/devongovett/node-wkhtmltopdf)
 */
 
+/*
+{
+	name: 'Craigson',
+	ip: '192.168.1.99',
+	date: true,
+	filename: 'output.pdf',
+	color: 'red'
+	fontSize: 8
+}
+
+*/
+
+
 const spawn = require('child_process').spawn;
 const fs = require('fs')
 const PDFDocument = require('pdfkit')
@@ -15,7 +28,8 @@ async function createWatermarkPdf(options){
 	let filenameArr = options.name.split(' ') // <<< add error checking here
 	let stampFile = filenameArr.join('_') + '_watermark.pdf'
 	const doc = new PDFDocument({margin:0})
-	doc.fontSize(8)
+	if (options.fontSize) doc.fontSize(options.fontSize)
+	if (options.color) doc.fill(options.color)
 	if (options.name) doc.text("Signed by: " + options.name, 50, 740)
 	if (options.ip) doc.text("IP address: " + options.ip, 50, 750)
 	if (options.date && options.date == true) doc.text("Signed on: " + date, 380, 750)
@@ -114,27 +128,26 @@ async function stampPdf(original, stamp, options)
 
 } // end of stampPdf
 
-async function signPdf(original, options){
+async function signPdf(original, options = {}){
 
-	console.log('executing signPdf')
+	let defaults = {
+		name: "Uknown",
+		ip: 'Unknown',
+		date: true,
+		filename: 'output.pdf',
+		fontSize: 8,
+		color: "black"
+	};
 
-	let name, ip
-	// determine if the 
-	if (!options) {
-		options = {};
-		name = "Unknown"
-		ip = "Unkown"
-	} else {
-		name = options.name
-		ip = options.ip
-	}
+	let actual = Object.assign({}, defaults, options);
+	console.info( actual.color );
 
 	try {
 		// generate the watermark with the signature
-		const signatureStamp = await createWatermarkPdf(options)
+		const signatureStamp = await createWatermarkPdf(actual)
 
 		// stamp the pdf
-		const result = stampPdf(original, signatureStamp, options)
+		const result = stampPdf(original, signatureStamp, actual)
 		console.log('result is: ' + result)
 		return await returnFilename(result)
 		
