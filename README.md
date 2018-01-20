@@ -55,11 +55,17 @@ pdfSigner('sample.pdf', options)
 
 ```
 
-![Input File](https://github.com/Craigson/node-pdfsigner/blob/master/examples/input.png?raw=true "Input File")
+Original input file:
 
-![Generated Signature](https://github.com/Craigson/node-pdfsigner/blob/master/examples/watermark.png?raw=true "Signature")
+![Input File](https://github.com/Craigson/node-pdfsigner/blob/master/examples/input.png?raw=true)
 
-![Result](https://github.com/Craigson/node-pdfsigner/blob/master/examples/output.png?raw=true "Result")
+Generated PDF signature:
+
+![Generated Signature](https://github.com/Craigson/node-pdfsigner/blob/master/examples/watermark.png?raw=true)
+
+Result:
+
+![Result](https://github.com/Craigson/node-pdfsigner/blob/master/examples/output.png?raw=true)
 
 ## Notes
 
