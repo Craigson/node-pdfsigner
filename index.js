@@ -1,19 +1,8 @@
 /*
-	This package references code from devongovett's node-wkhtmltopdf (https://github.com/devongovett/node-wkhtmltopdf)
-*/
-
-/*
-{
-	name: 'Craigson',
-	ip: '192.168.1.99',
-	date: true,
-	filename: 'output.pdf',
-	color: 'red'
-	fontSize: 8
-}
-
-*/
-
+	This package references code from Devon Govett's node-wkhtmltopdf (https://github.com/devongovett/node-wkhtmltopdf)
+	
+	pdftk CLI command: pdftk <input pdf> stamp <watermark pdf> output <output filename>
+	*/
 
 const spawn = require('child_process').spawn;
 const fs = require('fs')
@@ -21,8 +10,6 @@ const PDFDocument = require('pdfkit')
 
 // needs to return watermark filename
 async function createWatermarkPdf(options){
-
-	console.log('execute createWatermarkPdf')
 
 	let date = new Date()
 	let filenameArr = options.name.split(' ') // <<< add error checking here
@@ -40,11 +27,8 @@ async function createWatermarkPdf(options){
 
 }
 
-// Command: pdftk <input pdf> stamp <watermark pdf> output <output filename>
-// TODO: need to handle the case where options is an empty object
 async function stampPdf(original, stamp, options)
 {
-	console.log('execute stampPdf')
 
 	try {
 		let args =[signPdf.command]
@@ -84,9 +68,18 @@ async function stampPdf(original, stamp, options)
 		child.on('exit', function(code) {
 			console.log('child exit')
 			if (code !== 0) {
-			stderrMessages.push('signPdf exited with code ' + code);
-			handleError(stderrMessages);
-			console.log('child exiting, executing callback')
+				stderrMessages.push('signPdf exited with code ' + code);
+				handleError(stderrMessages);
+			}
+
+			if (options.removeStampFile)
+			{
+				try {
+					fs.unlinkSync(stamp);
+					console.log('successfully deleted /tmp/hello');
+				  } catch (err) {
+					console.error('Error: ', err)
+				}
 			}
 
 			// return outputFilename;
@@ -136,32 +129,25 @@ async function signPdf(original, options = {}){
 		date: true,
 		filename: 'output.pdf',
 		fontSize: 8,
-		color: "black"
+		color: "black",
+		removeStampFile: true
 	};
 
 	let actual = Object.assign({}, defaults, options);
-	console.info( actual.color );
 
 	try {
 		// generate the watermark with the signature
 		const signatureStamp = await createWatermarkPdf(actual)
 
 		// stamp the pdf
-		const result = stampPdf(original, signatureStamp, actual)
-		console.log('result is: ' + result)
-		return await returnFilename(result)
+		return await stampPdf(original, signatureStamp, actual)
+
 		
 	} catch (err) {
 		logger.error(err)
 	}
 }
 
-async function returnFilename(file)
-{
-	console.log('file ', file)
-	return file
-	
-}
 
 
 signPdf.command = 'pdftk'

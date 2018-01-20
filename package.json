@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/Craigson/node-pdfsigner#readme",
   "dependencies": {
+    "child-process-promise": "^2.2.1",
     "pdfkit": "^0.8.3"
   }
 }

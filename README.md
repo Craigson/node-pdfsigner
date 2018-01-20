@@ -33,7 +33,8 @@ Default options:
 		date: true,
 		filename: 'output.pdf',
 		fontSize: 8,
-		color: "black"
+		color: "black",
+		removeStampFile: true
 	}
 ```
 
@@ -46,7 +47,8 @@ var options = {
 	name: 'Craigson',
 	ip: '192.168.1.99',
 	date: true,
-	filename: 'output.pdf'
+	filename: 'output.pdf',
+	color: "red"
 }
 
 pdfSigner('sample.pdf', options)
