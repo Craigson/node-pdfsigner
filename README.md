@@ -28,7 +28,7 @@ Default options:
 
 ```
 	let defaults = {
-		name: "Uknown",
+		name: "Unknown",
 		ip: 'Unknown',
 		date: true,
 		filename: 'output.pdf',
@@ -43,7 +43,7 @@ Example:
 ```
 const pdfSigner = require('pdfSigner')
 
-var options = {
+const options = {
 	name: 'John Doe',
 	ip: '59.164.23.12',
 	date: true,

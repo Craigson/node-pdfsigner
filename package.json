@@ -1,7 +1,7 @@
 {
   "name": "node-pdfsigner",
   "version": "0.0.2",
-  "description": "Node module for electronically signing a PDF, makes use of PDFkit and pdfkt CLI tool",
+  "description": "Node module for electronically signing a PDF, makes use of PDFkit and pdftk CLI tool",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
