@@ -8,88 +8,101 @@ const spawn = require('child_process').spawn;
 const fs = require('fs')
 const PDFDocument = require('pdfkit')
 
-// needs to return watermark filename
-async function createWatermarkPdf(options){
+function signPdf(original, options = {}, callback){
 
+	let defaults = {
+		name: "Unknown",
+		ip: 'Unknown',
+		date: true,
+		resultFilename: 'output.pdf',
+		fontSize: 8,
+		color: "black",
+		removeSignaturePdf: true
+	};
+
+	let actual = Object.assign({}, defaults, options);
+
+	// create the signature
 	let date = new Date()
-	let filenameArr = options.name.split(' ') // <<< add error checking here
-	let stampFile = filenameArr.join('_') + '_watermark.pdf'
+	let filenameArr = actual.name.split(' ') // <<< add error checking here
+	let signatureFile = filenameArr.join('_') + '_signature.pdf'
 	const doc = new PDFDocument({margin:0})
-	if (options.fontSize) doc.fontSize(options.fontSize)
-	if (options.color) doc.fill(options.color)
-	if (options.name) doc.text("Signed by: " + options.name, 50, 740)
-	if (options.ip) doc.text("IP address: " + options.ip, 50, 750)
-	if (options.date && options.date == true) doc.text("Signed on: " + date, 380, 750)
-	doc.pipe( fs.createWriteStream(stampFile))
+	doc.fontSize(actual.fontSize)
+	doc.fill(actual.color)
+	doc.text("Signed by: " + actual.name, 50, 740)
+	doc.text("IP address: " + actual.ip, 50, 750)
+	if (actual.date) doc.text("Signed on: " + date, 380, 750)
+	doc.pipe( fs.createWriteStream(signatureFile))
 	doc.end()
-
-	return stampFile
-
-}
-
-async function stampPdf(original, stamp, options)
-{
-
+	
 	try {
+		let child
 		let args =[signPdf.command]
 		let outputFilename
 	
 		args.push(original)
 		args.push('stamp')
-		args.push(stamp)
+		args.push(signatureFile)
 		args.push('output')
 	
 		// check for filename option and if it includes the .pdf extension
-		if (options.filename) {
-			if (options.filename.indexOf('.pdf') < 0) outputFilename = options.filename + '.pdf'
-			else outputFilename = options.filename
+		if (actual.resultFilename) {
+			if (actual.resultFilename.indexOf('.pdf') < 0) outputFilename = actual.resultFilename + '.pdf'
+			else outputFilename = options.resultFilename
 		} else {
 			outputFilename = 'output.pdf'
 		}
-	
+		
 		args.push(outputFilename)
 	
+		console.log('Executing command: ' + args.join(' '))
+
 		// create a shell and run the pdftk CLI tool
 		if (process.platform === 'win32') {
-			var child = spawn(args[0], args.slice(1));
+			child = spawn(args[0], args.slice(1));
 		} else if (process.platform === 'darwin') {
-			var child = spawn('/bin/sh', ['-c', args.join(' ') + ' | cat ; exit ${PIPESTATUS[0]}']);
+			child = spawn('/bin/sh', ['-c', args.join(' ') + ' | cat ; exit ${PIPESTATUS[0]}']);
 		} else {
 			// this nasty business prevents piping problems on linux
 			// The return code should be that of wkhtmltopdf and not of cat
 			// http://stackoverflow.com/a/18295541/1705056
-			console.log('Executing command: ' + args.join(' '))
-			var child = spawn(signPdf.shell, ['-c', args.join(' ') + ' | cat ; exit ${PIPESTATUS[0]}']);
+			child = spawn(signPdf.shell, ['-c', args.join(' ') + ' | cat ; exit ${PIPESTATUS[0]}']);
 		}
 	
-		var stream = child.stdout;
+		let stream = child.stdout;
 	
 		// call the callback with null error when the process exits successfully
 		child.on('exit', function(code) {
-			console.log('child exit')
 			if (code !== 0) {
+				console.log('Error: ')
 				stderrMessages.push('signPdf exited with code ' + code);
 				handleError(stderrMessages);
+				return
 			}
 
-			if (options.removeStampFile)
+			if (actual.removeSignaturePdf)
 			{
 				try {
-					fs.unlinkSync(stamp);
-					console.log('successfully deleted /tmp/hello');
+					fs.unlinkSync(signatureFile);
+					console.log(`successfully deleted file ${signatureFile}`);
+					callback(null, outputFilename)
 				  } catch (err) {
 					console.error('Error: ', err)
 				}
+			} else {
+				callback(null, outputFilename)
 			}
+
+			
 
 			// return outputFilename;
 		});
 	
 		// setup error handling
-		var stderrMessages = [];
+		let stderrMessages = [];
 	
 		function handleError(err) {
-			var errObj = null;
+			let errObj = null;
 			if (Array.isArray(err)) {
 				errObj = new Error(err.join('\n'));
 			} else if (err) {
@@ -97,6 +110,8 @@ async function stampPdf(original, stamp, options)
 			}
 			child.removeAllListeners('exit');
 			child.kill();
+
+			if (callback) callback(errObj)
 			// call the callback if there is one
 	
 			// if not, or there are listeners for errors, emit the error event
@@ -110,6 +125,8 @@ async function stampPdf(original, stamp, options)
 		});
 	
 		child.stderr.on('data', function(data) {
+			stderrMessages.push((data || '').toString());
+			// console.log(data)
 		});
 
 	} catch (err) {
@@ -118,36 +135,7 @@ async function stampPdf(original, stamp, options)
 
 	}
 	
-
-} // end of stampPdf
-
-async function signPdf(original, options = {}){
-
-	let defaults = {
-		name: "Uknown",
-		ip: 'Unknown',
-		date: true,
-		filename: 'output.pdf',
-		fontSize: 8,
-		color: "black",
-		removeStampFile: true
-	};
-
-	let actual = Object.assign({}, defaults, options);
-
-	try {
-		// generate the watermark with the signature
-		const signatureStamp = await createWatermarkPdf(actual)
-
-		// stamp the pdf
-		return await stampPdf(original, signatureStamp, actual)
-
-		
-	} catch (err) {
-		logger.error(err)
-	}
 }
-
 
 
 signPdf.command = 'pdftk'

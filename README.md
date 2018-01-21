@@ -22,7 +22,7 @@ To install on Ubuntu Linux:
 
 ## Usage
 
-The package makes use of the ES6 async/await feature to sign a pdf in a two-step process. A pdf is created using pdfkit that contains the signature, then the watermark PDF is overlayed and combined with the input file. The current version will apply the signature to each page of the PDF.
+The original PDF is signed in a two-step process. A temporary pdf is created using pdfkit that contains the signature, then the signature PDF is overlayed and combined with the input file. The current version will apply the signature to each page of the PDF.
 
 Default options:
 
@@ -31,11 +31,11 @@ Default options:
 		name: "Unknown",
 		ip: 'Unknown',
 		date: true,
-		filename: 'output.pdf',
+		resultFilename: 'output.pdf',
 		fontSize: 8,
 		color: "black",
-		removeStampFile: true
-	}
+		removeSignaturePdf: true
+	};
 ```
 
 Example:
@@ -44,14 +44,20 @@ Example:
 const pdfSigner = require('pdfSigner')
 
 const options = {
-	name: 'John Doe',
-	ip: '59.164.23.12',
-	date: true,
-	filename: 'output.pdf',
-	color: "red"
+    name: 'John Doe',
+    ip: '59.164.59.14',
+    date: true,
+    resultFilename: 'example_output.pdf',
+    color: "red"
 }
 
-pdfSigner('sample.pdf', options)
+pdfSigner('sample.pdf', options, function(err, output){
+    if (err) console.log('callback: ', err)
+    
+    console.log(`Created signed PDF file: ${output}`)
+});
+
+
 
 ```
 

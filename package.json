@@ -1,6 +1,6 @@
 {
   "name": "node-pdfsigner",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Node module for electronically signing a PDF, makes use of PDFkit and pdftk CLI tool",
   "main": "index.js",
   "scripts": {
@@ -24,7 +24,6 @@
   },
   "homepage": "https://github.com/Craigson/node-pdfsigner#readme",
   "dependencies": {
-    "child-process-promise": "^2.2.1",
     "pdfkit": "^0.8.3"
   }
 }
