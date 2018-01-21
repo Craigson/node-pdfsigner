@@ -10,7 +10,7 @@ const PDFDocument = require('pdfkit')
 
 function signPdf(original, options = {}, callback){
 
-	let defaults = {
+	const defaults = {
 		name: "Unknown",
 		ip: 'Unknown',
 		date: true,

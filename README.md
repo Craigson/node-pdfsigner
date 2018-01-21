@@ -27,7 +27,7 @@ The original PDF is signed in a two-step process. A temporary pdf is created usi
 Default options:
 
 ```
-	let defaults = {
+	const defaults = {
 		name: "Unknown",
 		ip: 'Unknown',
 		date: true,
