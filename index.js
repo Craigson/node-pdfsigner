@@ -44,6 +44,8 @@ function signPdf(original, options = {}, callback){
 		args.push('stamp')
 		args.push(signatureFile)
 		args.push('output')
+
+		console.log(actual.resultFilename)
 	
 		// check for filename option and if it includes the .pdf extension
 		if (actual.resultFilename) {
@@ -64,7 +66,7 @@ function signPdf(original, options = {}, callback){
 			child = spawn('/bin/sh', ['-c', args.join(' ') + ' | cat ; exit ${PIPESTATUS[0]}']);
 		} else {
 			// this nasty business prevents piping problems on linux
-			// The return code should be that of wkhtmltopdf and not of cat
+			// The return code should be that of pdftk and not of cat
 			// http://stackoverflow.com/a/18295541/1705056
 			child = spawn(signPdf.shell, ['-c', args.join(' ') + ' | cat ; exit ${PIPESTATUS[0]}']);
 		}
@@ -80,6 +82,7 @@ function signPdf(original, options = {}, callback){
 				return
 			}
 
+			// check for the removeSignature flag and remove the temp PDF if true
 			if (actual.removeSignaturePdf)
 			{
 				try {
@@ -93,12 +96,9 @@ function signPdf(original, options = {}, callback){
 				callback(null, outputFilename)
 			}
 
-			
-
-			// return outputFilename;
 		});
 	
-		// setup error handling
+		// setup error handling ( NB this is messy <= FIX ME)
 		let stderrMessages = [];
 	
 		function handleError(err) {
