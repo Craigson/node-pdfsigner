@@ -12,7 +12,6 @@ function signPdf(original, options = {}, callback){
 
 	const defaults = {
 		name: "Unknown",
-		ip: 'Unknown',
 		date: true,
 		resultFilename: 'output.pdf',
 		fontSize: 8,
@@ -29,9 +28,10 @@ function signPdf(original, options = {}, callback){
 	const doc = new PDFDocument({margin:0})
 	doc.fontSize(actual.fontSize)
 	doc.fill(actual.color)
-	doc.text("Signed by: " + actual.name, 50, 740)
-	doc.text("IP address: " + actual.ip, 50, 750)
-	if (actual.date) doc.text("Signed on: " + date, 380, 750)
+	doc.text("Signed by: " + actual.name, 50, 730)
+	if(actual.email) doc.text(actual.email, 50,740)
+	if(actual.ip) doc.text(actual.ip, 50, 750)
+	if (actual.date) doc.text("Signed on: " + date, 380, 730)
 	doc.pipe( fs.createWriteStream(signatureFile))
 	doc.end()
 	
